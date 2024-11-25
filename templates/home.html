@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">Available Products</h1>
+    </div>
+</div>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description }}</p>
+                <p class="card-text">
+                    <strong>Price:</strong> ₹{{ "%.2f"|format(product.price) }} per {{ product.unit }}<br>
+                    <strong>Quantity Available:</strong> {{ product.quantity }} {{ product.unit }}<br>
+                    <strong>Location:</strong> {{ product.location }}<br>
+                    <strong>Seller:</strong> {{ product.seller.username }}
+                </p>
+                <p class="card-text"><small class="text-muted">Posted on {{ product.date_posted.strftime('%Y-%m-%d') }}</small></p>
+                {% if current_user.is_authenticated and not current_user.is_farmer %}
+                <button class="btn btn-success" onclick="contactFarmer('{{ product.seller.email }}')">Contact Farmer</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+function contactFarmer(email) {
+    window.location.href = `mailto:${email}?subject=Inquiry%20about%20your%20product&body=Hello,%0D%0A%0D%0AI%20am%20interested%20in%20your%20product.%20Please%20provide%20more%20information.`;
+}
+</script>
+{% endblock %}
